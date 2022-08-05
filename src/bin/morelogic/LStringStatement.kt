@@ -1,24 +1,17 @@
 package bin.morelogic
 
+import arc.scene.ui.Button
 import arc.scene.ui.layout.Table
+import bin.morelogic.statement.StringOp
 import mindustry.logic.*
 import mindustry.logic.LExecutor.LInstruction
-import mindustry.logic.LExecutor.Var
+import mindustry.ui.Styles
 
 /**
+ * TODO: 字符串的切片，插入，拆除，判断
  * @author bin
  */
 object LStringStatement {
-	@JvmStatic
-	fun Var.str(): String {
-		return if (isobj) {
-			val objval = objval
-			if (objval is String) objval else objval.toString()
-		}
-		else {
-			numval.toString()
-		}
-	}
 
 	@JvmStatic
 	fun StringBuilder.appendBySpace(vararg strings: String) {
@@ -27,55 +20,85 @@ object LStringStatement {
 		}
 	}
 
-	class AppendStringStatement : LStatement() {
-		var dest = "result"
-		var a = "a"
-		var b = "b"
-		override fun hidden(): Boolean {
-			return false
+	fun LAssembler.vars(vararg symbols: String): IntArray {
+		return IntArray(symbols.size) {
+			`var`(symbols[it])
 		}
+	}
 
-		override fun build(table: Table) {
+	/**
+	 * 字符串拼接
+	 */
+	class AppendStringStatement : LStatement() {
+		private var op = StringOp.Length
+		private var dest = "ab"
+		private var a = "a"
+		private var b = "b"
+		private var c = "c"
+		override fun build(table: Table) = rebuild(table)
+
+		private fun rebuild(table: Table) {
 			table.clearChildren()
 			field(table, dest) { dest = it }
 			table.add(" = ")
+			if (op.args == 1) {
+				opButton(table, table)
+				field(table, a) { a = it }
+				return
+			}
 			row(table)
+			if (LCanvas.useRows()) {
+				table.left()
+				table.row()
+				table.table { c: Table ->
+					c.color.set(category().color)
+					c.left()
+					funcs(c, table)
+				}.colspan(2).left()
+				return
+			}
+			funcs(table, table)
+		}
+
+		private fun funcs(table: Table, parent: Table) {
+			opButton(table, parent)
 			field(table, a) { a = it }
-			table.add(" append ")
 			field(table, b) { b = it }
 		}
 
-		override fun build(builder: LAssembler): LInstruction {
-			return AppendInstruction(builder.`var`(a), builder.`var`(b), builder.`var`(dest))
+		private fun opButton(table: Table, parent: Table) {
+			table.button({ b: Button ->
+				b.label { op.symbol }
+				b.clicked {
+					showSelect(b, StringOp.all, op) { o: StringOp ->
+						op = o
+						rebuild(parent)
+					}
+				}
+			}, Styles.logict) {}.size(64f, 40f).pad(4f).color(table.color)
 		}
 
-		override fun category(): LCategory {
-			return LCategory.operation
+		override fun build(builder: LAssembler): LInstruction {
+			return op(builder.vars(dest, a, b))
 		}
+
+		override fun category(): LCategory = LCategory.operation
 
 		override fun write(builder: StringBuilder) {
 			builder.append(ID)
-			builder.appendBySpace(
-				dest, a, b
-			)
-		}
-
-		private class AppendInstruction(var a: Int, var b: Int, var dest: Int) : LInstruction {
-			override fun run(exec: LExecutor) {
-				val v = exec.`var`(a).str()
-				val v2 = exec.`var`(b).str()
-				exec.setobj(dest, v + v2)
-			}
+			builder.appendBySpace(op.name, dest, a, b)
 		}
 
 		companion object {
-			const val ID = "bin_AppendString"
-			fun read(tokens: Array<String>): AppendStringStatement {
+			const val ID = "bin_String"
+			fun read(tokens: Array<String>): LStatement {
 				return AppendStringStatement().apply {
 					val length = tokens.size
-					if (length > 1) dest = tokens[1]
-					if (length > 2) a = tokens[2]
-					if (length > 3) b = tokens[3]
+					var i = 0
+					if (length > 0) op = StringOp.value(tokens[i++])
+					if (length > i) dest = tokens[i++]
+					if (length > i) a = tokens[i++]
+					if (length > i) b = tokens[i]
 				}
 			}
 		}
