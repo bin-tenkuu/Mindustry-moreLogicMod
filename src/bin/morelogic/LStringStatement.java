@@ -1,11 +1,12 @@
 package bin.morelogic;
 
-import arc.graphics.Color;
 import arc.scene.ui.layout.Table;
-import mindustry.graphics.Pal;
-import mindustry.logic.*;
+import mindustry.logic.LAssembler;
+import mindustry.logic.LCategory;
+import mindustry.logic.LExecutor;
 import mindustry.logic.LExecutor.LInstruction;
 import mindustry.logic.LExecutor.Var;
+import mindustry.logic.LStatement;
 
 /**
  * @author bin
@@ -16,6 +17,11 @@ public class LStringStatement {
     public static class AppendStringStatement extends LStatement {
         public static final String ID = "bin_AppendString";
         public String dest = "result", a = "a", b = "b";
+
+        @Override
+        public boolean hidden() {
+            return false;
+        }
 
         public static AppendStringStatement read(String[] tokens) {
             final var result = new AppendStringStatement();
@@ -49,8 +55,8 @@ public class LStringStatement {
         }
 
         @Override
-        public Color color() {
-            return Pal.logicOperations;
+        public LCategory category() {
+            return LCategory.operation;
         }
 
         @Override

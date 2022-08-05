@@ -11,14 +11,11 @@ import static bin.morelogic.LStringStatement.AppendStringStatement;
  */
 public class MoreStringLogicJavaPlugin extends Plugin {
 
-    public MoreStringLogicJavaPlugin() {
-        Log.info("Loaded ExampleJavaMod constructor.");
-        LAssembler.customParsers.put(AppendStringStatement.ID, AppendStringStatement::read);
-    }
-
     @Override
     public void loadContent() {
         Log.info("Loading MoreStringLogicJavaPlugin.");
+        LAssembler.customParsers.put(AppendStringStatement.ID, AppendStringStatement::read);
+        Log.info("End Loaded MoreStringLogicJavaPlugin.");
     }
 
 }
