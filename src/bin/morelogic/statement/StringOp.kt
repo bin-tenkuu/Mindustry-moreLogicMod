@@ -164,6 +164,54 @@ enum class StringOp(
 			}
 		}
 	},
+	CodePointAt("CodePointAt") {
+		override fun invoke(args: IntArray): Op = OpI(args)
+		override fun buttonTooltip(cell: Cell<Button>) {
+			cell.tooltip("打印缓存中字符")
+		}
+
+		override fun PrintBufferStatement.invoke(table: Table) {
+			table.clearChildren()
+			field(table, args[0]) {
+				args[0] = it
+			}
+			table.add(" = ")
+			opButton(table, table)
+			field(table, args[1]) {
+				args[1] = it
+			}
+		}
+
+		private inner class OpI(args: IntArray) : Op(args) {
+			override fun run(exec: LExecutor) {
+				val buffer = exec.textBuffer
+				val start = exec.numi(args[1]).coerceIn(0, buffer.length)
+				exec.setnum(args[0], buffer.codePointAt(start).toDouble())
+			}
+		}
+	},
+	AddCodePoint("AddCodePoint") {
+		override fun invoke(args: IntArray): Op = OpI(args)
+		override fun buttonTooltip(cell: Cell<Button>) {
+			cell.tooltip("打印缓存中字符")
+		}
+
+		override fun PrintBufferStatement.invoke(table: Table) {
+			table.clearChildren()
+			opButton(table, table)
+			field(table, args[0]) {
+				args[0] = it
+			}
+		}
+
+		private inner class OpI(args: IntArray) : Op(args) {
+			override fun run(exec: LExecutor) {
+				val buffer = exec.textBuffer
+				val start = exec.numi(args[0])
+				buffer.appendCodePoint(start)
+			}
+		}
+	},
 
 	;
 

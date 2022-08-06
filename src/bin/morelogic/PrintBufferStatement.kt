@@ -29,7 +29,7 @@ class PrintBufferStatement : LStatement() {
 
 	public override fun row(table: Table?) = super.row(table)
 	public override fun <T : Any?> showSelect(b: Button?, values: Array<out T>?, current: T, getter: Cons<T>?) =
-		super.showSelect(b, values, current, getter, 4) { it.size(128f, 40f) }
+		super.showSelect(b, values, current, getter, 4) { it.size(144f, 40f) }
 
 	override fun build(builder: LAssembler): LInstruction = op(builder.vars(args))
 
