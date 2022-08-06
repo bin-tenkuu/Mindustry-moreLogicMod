@@ -11,8 +11,8 @@ import mindustry.mod.Plugin
 class MoreStringLogicJavaPlugin : Plugin() {
 	override fun init() {
 		Log.info("Loading MoreStringLogicJavaPlugin.")
-		LAssembler.customParsers.put(StringStatement.ID, StringStatement::read)
-		LogicIO.allStatements.add(::StringStatement)
+		LAssembler.customParsers.put(PrintBufferStatement.ID, PrintBufferStatement::read)
+		LogicIO.allStatements.add(::PrintBufferStatement)
 		Log.info("End Loaded MoreStringLogicJavaPlugin.")
 	}
 }

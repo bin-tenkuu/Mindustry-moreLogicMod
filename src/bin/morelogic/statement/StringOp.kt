@@ -5,7 +5,7 @@ package bin.morelogic.statement
 import arc.scene.ui.Button
 import arc.scene.ui.layout.Cell
 import arc.scene.ui.layout.Table
-import bin.morelogic.StringStatement
+import bin.morelogic.PrintBufferStatement
 import mindustry.content.Blocks
 import mindustry.ctype.Content
 import mindustry.ctype.MappableContent
@@ -25,7 +25,7 @@ enum class StringOp(
 			cell.tooltip("从信息板读取字符到打印缓存，否则与 Print 作用相同")
 		}
 
-		override fun StringStatement.invoke(table: Table) {
+		override fun PrintBufferStatement.invoke(table: Table) {
 			table.clearChildren()
 			opButton(table, table)
 			field(table, args[0]) {
@@ -52,7 +52,7 @@ enum class StringOp(
 			cell.tooltip("获取打印缓存长度")
 		}
 
-		override fun StringStatement.invoke(table: Table) {
+		override fun PrintBufferStatement.invoke(table: Table) {
 			table.clearChildren()
 			field(table, args[0]) {
 				args[0] = it
@@ -73,7 +73,7 @@ enum class StringOp(
 			cell.tooltip("清除打印缓存")
 		}
 
-		override fun StringStatement.invoke(table: Table) {
+		override fun PrintBufferStatement.invoke(table: Table) {
 			table.clearChildren()
 			opButton(table, table)
 		}
@@ -90,7 +90,7 @@ enum class StringOp(
 			cell.tooltip("将打印缓存截取到固定长度")
 		}
 
-		override fun StringStatement.invoke(table: Table) {
+		override fun PrintBufferStatement.invoke(table: Table) {
 			table.clearChildren()
 			opButton(table, table)
 			field(table, args[0]) {
@@ -111,7 +111,7 @@ enum class StringOp(
 			cell.tooltip("寻找打印缓存中某字符串的位置")
 		}
 
-		override fun StringStatement.invoke(table: Table) {
+		override fun PrintBufferStatement.invoke(table: Table) {
 			table.clearChildren()
 			field(table, args[0]) {
 				args[0] = it
@@ -136,7 +136,7 @@ enum class StringOp(
 			cell.tooltip("截取打印缓存中的字符串")
 		}
 
-		override fun StringStatement.invoke(table: Table) {
+		override fun PrintBufferStatement.invoke(table: Table) {
 			table.clearChildren()
 			field(table, args[0]) {
 				args[0] = it
@@ -170,7 +170,7 @@ enum class StringOp(
 	abstract override fun invoke(args: IntArray): Op
 	override fun toString(): String = symbol
 
-	open fun StringStatement.invoke(table: Table) {
+	open fun PrintBufferStatement.invoke(table: Table) {
 		table.clearChildren()
 		field(table, args[0]) {
 			args[0] = it
@@ -181,7 +181,7 @@ enum class StringOp(
 
 	open fun buttonTooltip(cell: Cell<Button>) {}
 
-	protected fun StringStatement.opButton(table: Table, parent: Table) {
+	protected fun PrintBufferStatement.opButton(table: Table, parent: Table) {
 		buttonTooltip(table.button({ b: Button ->
 			b.label { op.symbol }
 			b.clicked {

@@ -18,7 +18,7 @@ import kotlin.math.min
  * TODO: 字符串的切片，插入，拆除，判断
  * @author bin
  */
-class StringStatement : LStatement() {
+class PrintBufferStatement : LStatement() {
 	var op = StringOp.GetLength
 	var args = arrayOf("dest", "a", "b", "c")
 
@@ -50,7 +50,7 @@ class StringStatement : LStatement() {
 	companion object {
 		const val ID = "bin_String"
 		fun read(tokens: Array<String?>): LStatement {
-			return StringStatement().apply {
+			return PrintBufferStatement().apply {
 				val length = tokens.size
 				if (length > 1) op = StringOp.value(tokens[1])
 				repeat(min(args.size, length - 2)) {
