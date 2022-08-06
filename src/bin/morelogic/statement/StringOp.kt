@@ -133,7 +133,7 @@ enum class StringOp(
 	SubString("SubString") {
 		override fun invoke(args: IntArray): Op = OpI(args)
 		override fun buttonTooltip(cell: Cell<Button>) {
-			cell.tooltip("截取打印缓存中的字符串")
+			cell.tooltip("截取打印缓存中的字符串，第二个参数可为负数")
 		}
 
 		override fun PrintBufferStatement.invoke(table: Table) {
@@ -167,7 +167,7 @@ enum class StringOp(
 	CodePointAt("CodePointAt") {
 		override fun invoke(args: IntArray): Op = OpI(args)
 		override fun buttonTooltip(cell: Cell<Button>) {
-			cell.tooltip("打印缓存中字符")
+			cell.tooltip("获取打印缓存中某一位字符的码点")
 		}
 
 		override fun PrintBufferStatement.invoke(table: Table) {
@@ -185,7 +185,11 @@ enum class StringOp(
 		private inner class OpI(args: IntArray) : Op(args) {
 			override fun run(exec: LExecutor) {
 				val buffer = exec.textBuffer
-				val start = exec.numi(args[1]).coerceIn(0, buffer.length)
+				if (buffer.isEmpty()) {
+					exec.setnum(args[0], 0.0)
+					return
+				}
+				val start = exec.numi(args[1]).coerceIn(0, buffer.length - 1)
 				exec.setnum(args[0], buffer.codePointAt(start).toDouble())
 			}
 		}
@@ -193,7 +197,7 @@ enum class StringOp(
 	AddCodePoint("AddCodePoint") {
 		override fun invoke(args: IntArray): Op = OpI(args)
 		override fun buttonTooltip(cell: Cell<Button>) {
-			cell.tooltip("打印缓存中字符")
+			cell.tooltip("将码点转换为字符添加到打印缓存")
 		}
 
 		override fun PrintBufferStatement.invoke(table: Table) {
