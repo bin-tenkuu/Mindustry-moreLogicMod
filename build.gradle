@@ -10,6 +10,7 @@ buildscript {
         mindustryVersion = 'v136'
         kotlinVersion = "1.7.10"
         sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+        gameData = System.getenv("TEMP") ?: System.getenv("TMP")
     }
 
     dependencies {
@@ -85,5 +86,15 @@ task deploy(type: Jar) {
             delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar"
             delete "$buildDir/libs/${project.archivesBaseName}Android.jar"
         }
+    }
+}
+
+task copy2game(type: Copy) {
+    dependsOn jar
+    from file("$buildDir/libs/")
+    include("${project.archivesBaseName}Desktop.jar")
+    into "$gameData/../../Roaming/Mindustry/mods"
+    doLast {
+        println "copy jar"
     }
 }
